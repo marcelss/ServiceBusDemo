@@ -20,6 +20,7 @@ namespace SBShared.Models
             LastName = lastName;
         }
 
+
         public PersonModel()
         {
 
