@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "MHV7sDwYdNo/WuYaSxbwt1WbGURZlOa5YOgnq5mFfSJTxHBSuD7YfUfVZDdEBlpz+ZEmXcgda+XbWZrWKo8YBQ==",
+  "success": true,
+  "projectFilePath": "C:\\workspace\\ServiceBusDemo\\SBShared\\SBShared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\marcel.santos\\.nuget\\packages\\faker.net\\1.5.138\\faker.net.1.5.138.nupkg.sha512",
+    "C:\\Users\\marcel.santos\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\marcel.santos\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
+    "C:\\Users\\marcel.santos\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

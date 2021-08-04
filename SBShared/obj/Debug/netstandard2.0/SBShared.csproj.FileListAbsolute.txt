@@ -1,0 +1,9 @@
+C:\workspace\ServiceBusDemo\SBShared\bin\Debug\netstandard2.0\SBShared.deps.json
+C:\workspace\ServiceBusDemo\SBShared\bin\Debug\netstandard2.0\SBShared.dll
+C:\workspace\ServiceBusDemo\SBShared\bin\Debug\netstandard2.0\SBShared.pdb
+C:\workspace\ServiceBusDemo\SBShared\obj\Debug\netstandard2.0\SBShared.csproj.AssemblyReference.cache
+C:\workspace\ServiceBusDemo\SBShared\obj\Debug\netstandard2.0\SBShared.AssemblyInfoInputs.cache
+C:\workspace\ServiceBusDemo\SBShared\obj\Debug\netstandard2.0\SBShared.AssemblyInfo.cs
+C:\workspace\ServiceBusDemo\SBShared\obj\Debug\netstandard2.0\SBShared.csproj.CoreCompileInputs.cache
+C:\workspace\ServiceBusDemo\SBShared\obj\Debug\netstandard2.0\SBShared.dll
+C:\workspace\ServiceBusDemo\SBShared\obj\Debug\netstandard2.0\SBShared.pdb

@@ -1,0 +1,41 @@
+﻿@page "/"
+@using SBShared.Models
+@using SBSenderWeb.Services
+@using System.ComponentModel.DataAnnotations
+@inject IQueueService _queue
+
+<h1>Person Queue</h1>
+
+<form @onsubmit="PublishMessage">
+    <div class="form-group">
+        <label>Enter the amount of data you want to send to the Queue</label>
+        <input class="form-control"
+               required
+               type="number"
+               @bind="@amountOfData" />
+    </div>
+    <button type="submit" class="btn btn-primary" disabled="@disableSubmit">Submit</button>
+
+</form>
+
+@code
+{
+    [Required]
+    private int amountOfData = 0;
+    private readonly List<PersonModel> people = new List<PersonModel>();
+    private bool disableSubmit = false;
+    private async Task PublishMessage()
+    {
+        disableSubmit = true;
+        for (var i = 0; i < amountOfData; i++)
+        {
+            var person = new PersonModel(Faker.Name.First(), Faker.Name.Last());
+            people.Add(person);
+        }
+
+        await _queue.SendMessagesAsync(people, "personqueue");
+
+        people.Clear();
+        disableSubmit = false;
+    }
+}
