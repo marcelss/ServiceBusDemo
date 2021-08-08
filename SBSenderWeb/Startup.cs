@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus;
+using Faker;
 using SBSenderWeb.Services;
 
 namespace SBSenderWeb
@@ -30,7 +32,10 @@ namespace SBSenderWeb
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<ServiceBusClient>(x => 
+                new ServiceBusClient(connectionString:Configuration.GetValue<string>("AzureServiceBus:ConnectionString")));
             services.AddTransient<IQueueService, QueueService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

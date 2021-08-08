@@ -16,8 +16,9 @@ namespace SBSenderWeb.Services
 
         // the sender used to publish messages to the queue
         private ServiceBusSender _sender;
-        public QueueService(IConfiguration config)
+        public QueueService(IConfiguration config, ServiceBusClient queueClient)
         {
+            _queueClient = queueClient;
             _config = config;
         }
 
@@ -25,7 +26,6 @@ namespace SBSenderWeb.Services
         {
             try
             {
-                _queueClient = new ServiceBusClient(_config.GetConnectionString("AzureServiceBus"));
                 _sender = _queueClient.CreateSender(queueName);
 
                 string messageBody = JsonConvert.SerializeObject(serviceBusMessage);
@@ -38,14 +38,11 @@ namespace SBSenderWeb.Services
                 // Calling DisposeAsync on client types is required to ensure that network
                 // resources and other unmanaged objects are properly cleaned up.
                 await _sender.DisposeAsync();
-                await _queueClient.DisposeAsync();
             }
         }
 
         public async Task SendMessagesAsync<T>(IList<T> serviceBusMessages, string queueName)
         {
-
-            _queueClient = new ServiceBusClient(_config.GetConnectionString("AzureServiceBus"));
             _sender = _queueClient.CreateSender(queueName);
 
             // create a batch 
@@ -73,7 +70,6 @@ namespace SBSenderWeb.Services
                 // Calling DisposeAsync on client types is required to ensure that network
                 // resources and other unmanaged objects are properly cleaned up.
                 await _sender.DisposeAsync();
-                await _queueClient.DisposeAsync();
             }
         }
     }

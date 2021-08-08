@@ -12,11 +12,37 @@
         <input class="form-control"
                required
                type="number"
+               min="1"
                @bind="@amountOfData" />
     </div>
     <button type="submit" class="btn btn-primary" disabled="@disableSubmit">Submit</button>
 
 </form>
+<br>
+@if (people == null || !people.Any())
+{
+    <p><em>No data to send...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>FirstName</th>
+            <th>LastName</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var forecast in people)
+        {
+            <tr>
+                <td>@forecast.FirstName</td>
+                <td>@forecast.LastName</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
 
 @code
 {
@@ -26,6 +52,7 @@
     private bool disableSubmit = false;
     private async Task PublishMessage()
     {
+        people.Clear();
         disableSubmit = true;
         for (var i = 0; i < amountOfData; i++)
         {
@@ -35,7 +62,6 @@
 
         await _queue.SendMessagesAsync(people, "personqueue");
 
-        people.Clear();
         disableSubmit = false;
     }
 }
