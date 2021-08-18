@@ -7,52 +7,105 @@
 <h1>Person Queue</h1>
 
 <form @onsubmit="PublishMessage">
-    <div class="form-group">
-        <label>Enter the amount of data you want to send to the Queue</label>
-        <input class="form-control"
-               required
-               type="number"
-               min="1"
-               @bind="@amountOfData" />
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Enter the amount of data you want to send to the Queue</label>
+                <input class="form-control"
+                       required
+                       type="number"
+                       min="1"
+                       @bind="@amountOfData" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Queue Type</label>
+                <select value="@queueType" @onchange="ChangeType" class="form-control">
+                    <option value="0">Queue</option>
+                    <option value="1">Topic</option>
+                </select>
+            </div>
+        </div>
+
     </div>
     <button type="submit" class="btn btn-primary" disabled="@disableSubmit">Submit</button>
-
 </form>
 <br>
-@if (people == null || !people.Any())
-{
-    <p><em>No data to send...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-        <tr>
-            <th>FirstName</th>
-            <th>LastName</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var forecast in people)
-        {
-            <tr>
-                <td>@forecast.FirstName</td>
-                <td>@forecast.LastName</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
-
+<fieldset>
+    <div class="row">
+        <div class="col-sm-6">
+            @if (people == null || !people.Any())
+            {
+                <p><em>No data to send...</em></p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var forecast in people)
+                    {
+                        <tr>
+                            <td>@forecast.FirstName</td>
+                            <td>@forecast.LastName</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div class="col-sm-6">
+            @if (addresses == null || !addresses.Any())
+            {
+                <p><em>No data to send...</em></p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Street Address</th>
+                        <th>ZipCode</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in addresses)
+                    {
+                        <tr>
+                            <td>@item.StreetAddress</td>
+                            <td>@item.PostalCode</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</fieldset>
 @code
 {
     [Required]
     private int amountOfData = 0;
     private readonly List<PersonModel> people = new List<PersonModel>();
+    private readonly List<AddressModel> addresses = new List<AddressModel>();
     private bool disableSubmit = false;
+    private int queueType { get; set; } = 0;
+
+    void ChangeType(ChangeEventArgs e)
+    {
+        queueType = Convert.ToInt32(e.Value.ToString());
+    }
+
     private async Task PublishMessage()
     {
         people.Clear();
+        addresses.Clear();
         disableSubmit = true;
         for (var i = 0; i < amountOfData; i++)
         {
@@ -60,7 +113,18 @@ else
             people.Add(person);
         }
 
-        await _queue.SendMessagesAsync(people, "personqueue");
+        await _queue.SendMessagesAsync(people, queueType == 0 ? "personqueue" : "persontopic");
+
+        if (queueType == 1)
+        {
+            for (var i = 0; i < amountOfData; i++)
+            {
+                var address = new AddressModel(Faker.Address.StreetAddress(), Faker.Address.ZipCode());
+                addresses.Add(address);
+            }
+
+            await _queue.SendMessagesAsync(addresses, "persontopic");
+        }
 
         disableSubmit = false;
     }

@@ -6,8 +6,9 @@ namespace SBSenderWeb.Services
 {
     public interface IQueueService
     {
-        Task SendMessageAsync<T>(T serviceBusMessage, string queueName);
+        Task SendMessageAsync<T>(T serviceBusMessage, string topicOrQueueName);
 
-        Task SendMessagesAsync<T>(IList<T> serviceBusMessages, string queueName);
+        Task SendMessagesAsync<T>(IList<T> serviceBusMessages, string topicOrQueueName);
+        
     }
 }

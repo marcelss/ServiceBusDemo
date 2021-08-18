@@ -22,15 +22,15 @@ namespace SBSenderWeb.Services
             _config = config;
         }
 
-        public async Task SendMessageAsync<T>(T serviceBusMessage, string queueName)
+        public async Task SendMessageAsync<T>(T serviceBusMessage, string topicOrQueueName)
         {
             try
             {
-                _sender = _queueClient.CreateSender(queueName);
+                _sender = _queueClient.CreateSender(topicOrQueueName);
 
                 string messageBody = JsonConvert.SerializeObject(serviceBusMessage);
                 var message = new ServiceBusMessage(Encoding.UTF8.GetBytes(messageBody));
-
+                message.ApplicationProperties["type"] = typeof(T).Name;
                 await _sender.SendMessageAsync(message);
             }
             finally
@@ -41,9 +41,9 @@ namespace SBSenderWeb.Services
             }
         }
 
-        public async Task SendMessagesAsync<T>(IList<T> serviceBusMessages, string queueName)
+        public async Task SendMessagesAsync<T>(IList<T> serviceBusMessages, string topicOrQueueName)
         {
-            _sender = _queueClient.CreateSender(queueName);
+            _sender = _queueClient.CreateSender(topicOrQueueName);
 
             // create a batch 
             using ServiceBusMessageBatch messageBatch = await _sender.CreateMessageBatchAsync();
@@ -52,7 +52,7 @@ namespace SBSenderWeb.Services
             {
                 string messageBody = JsonConvert.SerializeObject(serviceBusMessage);
                 var message = new ServiceBusMessage(Encoding.UTF8.GetBytes(messageBody));
-
+                message.ApplicationProperties["type"] = typeof(T).Name;
                 // try adding a message to the batch
                 if (!messageBatch.TryAddMessage(message))
                 {
@@ -72,5 +72,6 @@ namespace SBSenderWeb.Services
                 await _sender.DisposeAsync();
             }
         }
+
     }
 }
