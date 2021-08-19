@@ -21,16 +21,17 @@ namespace SBReceiver
 
         static string[] subscriptionNames = { "people", "addresses" };
         static int subscriptionOption = 0;
-        
+        static int queueOption = 0;
+
         static async Task Main(string[] args)
         {
             var appConfig = InitOptions<AppConfig>();
             Console.Write("Please choose [0]Queue or [1]Topic:");
             var queueOptionInput = Console.ReadLine();
 
-            int.TryParse(queueOptionInput, out int queueOption);
+            int.TryParse(queueOptionInput, out queueOption);
 
-            
+
             if (queueOption == 1)
             {
                 Console.Write("Please choose subscription [0]People or [1]Address:");
@@ -63,7 +64,7 @@ namespace SBReceiver
             try
             {
                 // add handler to process messages
-                _processor.ProcessMessageAsync += MessageHandlerTopic;
+                _processor.ProcessMessageAsync += MessageHandlerAsync;
 
                 // add handler to process any errors
                 _processor.ProcessErrorAsync += ErrorHandlerAsync;
@@ -124,7 +125,8 @@ namespace SBReceiver
             }
         }
 
-        private static async Task MessageHandlerAsync(ProcessMessageEventArgs args)
+
+        private static async Task MessageHandlerDeserializeAsync(ProcessMessageEventArgs args)
         {
             var jsonString = Encoding.UTF8.GetString(args.Message.Body);
             PersonModel person = JsonConvert.DeserializeObject<PersonModel>(jsonString);
@@ -135,10 +137,10 @@ namespace SBReceiver
         }
 
         // handle received messages
-        static async Task MessageHandlerTopic(ProcessMessageEventArgs args)
+        private static async Task MessageHandlerAsync(ProcessMessageEventArgs args)
         {
-            string body = args.Message.Body.ToString();
-            Console.WriteLine($"Received: {body} from subscription: {subscriptionNames[subscriptionOption]}");
+            string body = Encoding.UTF8.GetString(args.Message.Body);
+            Console.WriteLine($"Received: {body} from {(queueOption == 0 ? "queue" : "subscription")}: {(queueOption == 0 ? "personqueue" : subscriptionNames[subscriptionOption])}");
 
             // complete the message. messages is deleted from the subscription. 
             await args.CompleteMessageAsync(args.Message);
