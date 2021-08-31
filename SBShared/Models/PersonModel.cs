@@ -14,10 +14,13 @@ namespace SBShared.Models
         [Required]
         public string LastName { get; set; }
 
-        public PersonModel(string firstName, string lastName)
+        public int Age { get; set; }
+
+        public PersonModel(string firstName, string lastName, int age)
         {
             FirstName = firstName;
             LastName = lastName;
+            Age = age;
         }
 
 

@@ -19,9 +19,12 @@ namespace SBReceiver
         // the processor that reads and processes messages from the queue
         static ServiceBusProcessor _processor;
 
-        static string[] subscriptionNames = { "people", "addresses" };
+        static string[] subscriptionNames = { "people", "addresses"};
         static int subscriptionOption = 0;
         static int queueOption = 0;
+
+        static int maxProcess = 10;
+        static int count = 1;
 
         static async Task Main(string[] args)
         {
@@ -58,7 +61,10 @@ namespace SBReceiver
             _processor = _queueClient.CreateProcessor(topicOrQueueName, subscriptionName, new ServiceBusProcessorOptions()
             {
                 MaxConcurrentCalls = 1,
-                AutoCompleteMessages = false
+                AutoCompleteMessages = false,
+                PrefetchCount = 5,
+                ReceiveMode = ServiceBusReceiveMode.PeekLock,
+                
             });
 
             try
@@ -68,10 +74,10 @@ namespace SBReceiver
 
                 // add handler to process any errors
                 _processor.ProcessErrorAsync += ErrorHandlerAsync;
-
+                
                 // start processing 
                 await _processor.StartProcessingAsync();
-
+                
                 Console.WriteLine("Wait while it is processing and then press any key to end the processing");
                 Console.ReadKey();
 
@@ -143,12 +149,13 @@ namespace SBReceiver
             Console.WriteLine($"Received: {body} from {(queueOption == 0 ? "queue" : "subscription")}: {(queueOption == 0 ? "personqueue" : subscriptionNames[subscriptionOption])}");
 
             // complete the message. messages is deleted from the subscription. 
-            await args.CompleteMessageAsync(args.Message);
+            await args.CompleteMessageAsync(args.Message);            
         }
 
         private static Task ErrorHandlerAsync(ProcessErrorEventArgs args)
         {
             Console.WriteLine($"Message handler exception: {args.Exception.Message}");
+
             return Task.CompletedTask;
         }
 

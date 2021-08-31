@@ -109,7 +109,7 @@
         disableSubmit = true;
         for (var i = 0; i < amountOfData; i++)
         {
-            var person = new PersonModel(Faker.Name.First(), Faker.Name.Last());
+            var person = new PersonModel(Faker.Name.First(), Faker.Name.Last(), Faker.RandomNumber.Next());
             people.Add(person);
         }
 
