@@ -6,7 +6,7 @@
 
 ## General info
 
-This project is a simple solution to learn how Azure Service Bus works, you can send and receive messages to a queue or a topic.
+This project is a simple demo to show how Azure Service Bus works, you can send and receive messages to a queue or a topic.
 
 
 
